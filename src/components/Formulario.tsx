@@ -1,10 +1,10 @@
 "use client"; // Obligatorio cuando se usan hooks de cliente en NEXT
 
-import React, { useState, useEffect } from 'react';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Card } from '@/components/ui/card';
+import React, {useState, useEffect} from 'react';
+import {z} from 'zod';
+import {useForm} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {Card} from '@/components/ui/card';
 import {
     Form,
     FormField,
@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import FuerzaDeContrasena from '@/components/FuerzaDeContrasena';
 
-// Esquema de validación con Zod
+// Esquema de validación con Zod según doc.
 const esquemaZod = z.object({
     nombreCompleto: z
         .string()
@@ -39,7 +39,7 @@ const FormularioRegistro: React.FC = () => {
         mode: 'onChange',
     });
 
-    // Estados locales
+    // Estados locales de REACT
     const [mostrarClave, setMostrarClave] = useState(false);
     const [fuerzaClave, setFuerzaClave] = useState(0);
 

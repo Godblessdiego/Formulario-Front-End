@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Formulario de Registro - Frontend
 
-## Getting Started
+Este proyecto es una aplicación de formulario de registro desarrollada con tecnologías modernas de frontend. Proporciona una interfaz de usuario intuitiva con validación en tiempo real y feedback visual para el usuario.
 
-First, run the development server:
+## Tecnologías Utilizadas
+
+### Frontend
+- **Next.js (v15.3.2)**: Framework de React que permite renderizado del lado del servidor y generación de sitios estáticos.
+- **React (v18.3.1)**: Biblioteca para construir interfaces de usuario con componentes reutilizables.
+- **TypeScript**: Superset de JavaScript que añade tipado estático para mejorar la calidad del código y la experiencia de desarrollo.
+- **Tailwind CSS (v4)**: Framework CSS utilitario que permite un desarrollo rápido y consistente de interfaces.
+- **tw-animate-css**: Biblioteca de animaciones para Tailwind CSS.
+
+### Validación y Formularios
+- **Zod (v3.25.32)**: Biblioteca de validación de esquemas TypeScript-first para validar datos de entrada.
+- **React Hook Form (v7.56.4)**: Biblioteca para manejo de formularios con alto rendimiento y validación flexible.
+- **@hookform/resolvers**: Integraciones para conectar React Hook Form con bibliotecas de validación como Zod.
+
+### Componentes UI
+- **Radix UI**: Biblioteca de componentes primitivos accesibles y sin estilos para construir sistemas de diseño robustos.
+- **Lucide React**: Biblioteca de iconos SVG para React.
+- **class-variance-authority & clsx**: Utilidades para manejar clases condicionales en componentes.
+
+## Características Implementadas
+
+- **Formulario de Registro**: Interfaz de usuario moderna y responsiva para registro de usuarios.
+- **Validación en Tiempo Real**: Validación de campos mientras el usuario escribe con mensajes de error claros.
+- **Indicador de Fuerza de Contraseña**: Componente visual que muestra la fortaleza de la contraseña ingresada.
+- **Interfaz Adaptable**: Diseño responsivo que se adapta a diferentes tamaños de pantalla.
+- **Accesibilidad**: Implementación de prácticas de accesibilidad para mejorar la experiencia de todos los usuarios.
+- **Modo Oscuro/Claro**: Soporte para temas de interfaz claros y oscuros.
+
+## Estructura del Proyecto
+
+- **src/components**: Componentes reutilizables como el formulario y el indicador de fuerza de contraseña.
+- **src/app**: Estructura de la aplicación Next.js con páginas y layouts.
+- **src/app/globals.css**: Estilos globales y configuración de temas.
+
+## Cómo Iniciar el Proyecto
+
+Para ejecutar el proyecto en modo desarrollo:
 
 ```bash
 npm run dev
-# or
+# o
 yarn dev
-# or
+# o
 pnpm dev
-# or
+# o
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el resultado.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Despliegue
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Este proyecto puede ser desplegado en plataformas como Vercel, Netlify o cualquier otro servicio que soporte aplicaciones Next.js.

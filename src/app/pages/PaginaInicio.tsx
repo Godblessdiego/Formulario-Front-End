@@ -1,5 +1,4 @@
 "use client";
-
 import React from 'react';
 import Formulario from '@/components/Formulario';
 
@@ -42,7 +41,7 @@ const PaginaInicio: React.FC = () => {
                                 <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                                     <span className="text-blue-600 font-bold text-xl">⚡</span>
                                 </div>
-                                <p className="text-gray-700">Almacenamiento seguro en base de datos de PostgreSQL y servidores usando Flask <br/>(nada de blockchain como los cryptobros).</p>
+                                <p className="text-gray-700">Almacenamiento seguro en base de datos de PostgreSQL y servidores usando Flask(Python) <br/>(nada de blockchain como los cryptobros).</p>
                             </article>
                             <article className="flex items-center space-x-4">
                                 <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
