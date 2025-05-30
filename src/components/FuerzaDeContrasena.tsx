@@ -1,41 +1,51 @@
 import React, { useMemo } from 'react'
 import { Progress } from "@/components/ui/progress"
 
-type tipoFuerzaContrasena = "Muy corta" | "Débil" | "Intermedia" | "Fuerte";
+// Defino los tipos posibles de fuerza de contraseña
+type TipoFuerzaContrasena = "Muy corta" | "Débil" | "Intermedia" | "Fuerte";
 
-interface ContrasenaProps {
+// Interfaz para las props del componente
+interface Props {
     clave: string
-    nombreClase?: string
+    className?: string
 }
 
-const IndicadorFuerzaDeContrasena: React.FC<ContrasenaProps> = ({
-    clave = "",
-    nombreClase = "",
-}: ContrasenaProps) => {
-    const calcularFuerza: number = useMemo<number>(() => {
-        if (clave.length < 6) return 0;
+const FuerzaDeContrasena: React.FC<Props> = ({ clave, className }) => {
+    // Uso useMemo para calcular la fuerza solo cuando cambia la contraseña
+    const { puntaje, categoria } = useMemo(() => {
+        // Si es muy corta, directamente retorno 0 puntos
+        if (clave.length < 6) {
+            return { puntaje: 0, categoria: 'Muy corta' as TipoFuerzaContrasena };
+        }
 
-        let puntaje = 0;
-        // Longitud: 10 pts por letra hasta 60
-        puntaje += Math.min(clave.length * 10, 50);
-        // Mayúsculas
-        if (/[A-Z]/.test(clave)) puntaje += 5;
-        // Números
-        if (/[0-9]/.test(clave)) puntaje += 5;
-        // Caracteres especiales - expanded pattern
-        if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]+/.test(clave)) puntaje += 20;
+        let puntos = 0;
 
-        return Math.min(Math.max(puntaje, 0), 100);
+        // Asigno puntos por longitud (máximo 50 puntos)
+        puntos += Math.min(clave.length * 10, 50);
+
+        // Bonus por tener mayúsculas
+        if (/[A-Z]/.test(clave)) puntos += 5;
+
+        // Bonus por tener números
+        if (/[0-9]/.test(clave)) puntos += 5;
+
+        // Bonus mayor por tener caracteres especiales
+        if (/[^A-Za-z0-9]/.test(clave)) puntos += 20;
+
+        // Limito el puntaje entre 0 y 100
+        const puntajeFinal = Math.min(Math.max(puntos, 0), 100);
+
+        // Determino la categoría según el puntaje
+        let cat: TipoFuerzaContrasena;
+        if (puntajeFinal < 30) cat = 'Débil';
+        else if (puntajeFinal < 70) cat = 'Intermedia';
+        else cat = 'Fuerte';
+
+        return { puntaje: puntajeFinal, categoria: cat };
     }, [clave]);
 
-    const categoria = useMemo((): tipoFuerzaContrasena => {
-        if (clave.length < 6) return 'Muy corta';
-        if (calcularFuerza < 30) return 'Débil';
-        if (calcularFuerza < 70) return 'Intermedia';
-        return 'Fuerte';
-    }, [clave, calcularFuerza]);
-
-    const colorCategoria: Record<tipoFuerzaContrasena, string> = {
+    // Defino los colores para cada categoría
+    const coloresCategoria: Record<TipoFuerzaContrasena, string> = {
         "Muy corta": "bg-red-500",
         "Débil": "bg-red-400",
         "Intermedia": "bg-yellow-400",
@@ -44,14 +54,17 @@ const IndicadorFuerzaDeContrasena: React.FC<ContrasenaProps> = ({
 
     return (
         <div className="w-full space-y-1">
-            <section className="flex justify-between items-center text-xs gap-2">
-                <p><span className="text-sm font-medium">{categoria}</span></p>
+            <div className="flex justify-between items-center text-xs gap-2">
+                {/* Muestro la categoría actual */}
+                <span className="text-sm font-medium">{categoria}</span>
+                {/* Barra de progreso con color dinámico */}
                 <Progress
-                    value={calcularFuerza}
+                    value={puntaje}
                     max={100}
-                    className={`${colorCategoria[categoria]} ${nombreClase}`}
+                    className={`${coloresCategoria[categoria]} ${className || ''}`}
                 />
-            </section>
+            </div>
+            {/* Mensaje de ayuda cuando la contraseña es muy corta */}
             {categoria === 'Muy corta' && (
                 <p className="text-xs text-red-500">
                     La contraseña debe tener al menos 6 caracteres.
@@ -61,4 +74,4 @@ const IndicadorFuerzaDeContrasena: React.FC<ContrasenaProps> = ({
     );
 };
 
-export default IndicadorFuerzaDeContrasena;
+export default FuerzaDeContrasena;

@@ -1,10 +1,11 @@
-"use client"; // Obligatorio cuando se usan hooks de cliente en NEXT
+"use client";
 
-import React, {useState, useEffect} from 'react';
-import {z} from 'zod';
-import {useForm} from 'react-hook-form';
-import {zodResolver} from '@hookform/resolvers/zod';
-import {Card} from '@/components/ui/card';
+import React, { useState } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { Card } from "@/components/ui/card";
 import {
     Form,
     FormField,
@@ -13,64 +14,82 @@ import {
     FormControl,
     FormDescription,
     FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Eye, EyeOff } from 'lucide-react';
-import FuerzaDeContrasena from '@/components/FuerzaDeContrasena';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Eye, EyeOff } from "lucide-react";
+import FuerzaDeContrasena from "@/components/FuerzaDeContrasena";
 
-// Esquema de validación con Zod según doc.
-const esquemaZod = z.object({
+// Defino las reglas de validación con Zod para cada campo
+const esquemaValidacion = z.object({
     nombreCompleto: z
         .string()
-        .min(3, { message: 'El nombre debe tener al menos 3 caracteres' }),
-    correo: z.string().email({ message: 'Ingresa un correo válido' }),
+        .min(3, { message: "El nombre debe tener al menos 3 caracteres" }),
+    correo: z.string().email({ message: "Ingresa un correo válido" }),
     clave: z
         .string()
-        .min(6, { message: 'La contraseña debe tener al menos 6 caracteres' }),
+        .min(6, { message: "La contraseña debe tener al menos 6 caracteres" }),
 });
 
-type FormValues = z.infer<typeof esquemaZod>;
+// Creo el tipo TypeScript basado en el esquema de validación
+type DatosFormulario = z.infer<typeof esquemaValidacion>;
 
 const FormularioRegistro: React.FC = () => {
-    // Configuración de React Hook Form con Zod
-    const form = useForm<FormValues>({
-        resolver: zodResolver(esquemaZod),
-        mode: 'onChange',
+    // Configuro react-hook-form con validación en tiempo real
+    const formulario = useForm<DatosFormulario>({
+        resolver: zodResolver(esquemaValidacion),
+        mode: "onChange", // Valida mientras el usuario escribe
     });
 
-    // Estados locales de REACT
+    // Estado para mostrar/ocultar la contraseña
     const [mostrarClave, setMostrarClave] = useState(false);
-    const [fuerzaClave, setFuerzaClave] = useState(0);
 
-    // Observar el valor de 'clave' para medir su fuerza
-    const clave = form.watch('clave') || '';
+    // Observo el valor actual de la contraseña para el componente de fuerza
+    const claveActual = formulario.watch("clave") || "";
 
-    useEffect(() => {
-        let puntaje = 0;
-        // Longitud: 10 pts por carácter hasta 50
-        puntaje += Math.min(clave.length * 10, 50);
-        // Mayúsculas
-        if (/[A-Z]/.test(clave)) puntaje += 5;
-        // Números
-        if (/[0-9]/.test(clave)) puntaje += 5;
-        // Caracteres especiales
-        if (/[^A-Za-z0-9]/.test(clave)) puntaje += 20;
-        setFuerzaClave(Math.min(Math.max(puntaje, 0), 100));
-    }, [clave]);
+    // Función que se ejecuta cuando se envía el formulario
+    const onSubmit = async (datos: DatosFormulario) => {
+        console.log("Datos enviados:", datos);
 
-    // Función de envío de formulario
-    const onSubmit = (data: FormValues) => {
-        console.log('Datos enviados:', data);
-        // Llamada a API o lógica adicional aquí
+        try {
+            // Envío los datos al servidor backend
+            const response = await fetch("http://localhost:5000/usuarios", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    nombre: datos.nombreCompleto,
+                    correo: datos.correo,
+                    contrasena: datos.clave,
+                }),
+            });
+
+            // Manejo errores del servidor
+            if (!response.ok) {
+                const error = await response.json();
+                alert(`❌ Error: ${error.detalle}`);
+                return;
+            }
+
+            // Si todo sale bien, limpio el formulario
+            alert("✅ Registro exitoso");
+            formulario.reset();
+        } catch (error) {
+            // Manejo errores de conexión
+            console.error(error);
+            alert("❌ No se pudo conectar al servidor");
+        }
     };
 
     return (
         <Card className="w-full max-w-md mx-auto bg-white shadow-sm border border-gray-100 p-3 sm:p-4 rounded-md">
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <Form {...formulario}>
+                <form
+                    onSubmit={formulario.handleSubmit(onSubmit)}
+                    className="space-y-8"
+                >
+                    {/* Campo de nombre completo */}
                     <FormField
-                        control={form.control}
+                        control={formulario.control}
                         name="nombreCompleto"
                         render={({ field }) => (
                             <FormItem>
@@ -84,8 +103,9 @@ const FormularioRegistro: React.FC = () => {
                         )}
                     />
 
+                    {/* Campo de correo electrónico */}
                     <FormField
-                        control={form.control}
+                        control={formulario.control}
                         name="correo"
                         render={({ field }) => (
                             <FormItem>
@@ -99,8 +119,9 @@ const FormularioRegistro: React.FC = () => {
                         )}
                     />
 
+                    {/* Campo de contraseña con botón para mostrar/ocultar */}
                     <FormField
-                        control={form.control}
+                        control={formulario.control}
                         name="clave"
                         render={({ field }) => (
                             <FormItem>
@@ -108,15 +129,20 @@ const FormularioRegistro: React.FC = () => {
                                 <FormControl>
                                     <div className="relative">
                                         <Input
-                                            type={mostrarClave ? 'text' : 'password'}
+                                            type={mostrarClave ? "text" : "password"}
                                             placeholder="••••••"
                                             {...field}
                                         />
+                                        {/* Botón para alternar visibilidad de la contraseña */}
                                         <button
                                             type="button"
                                             onClick={() => setMostrarClave(!mostrarClave)}
-                                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                                            aria-label={mostrarClave ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                            aria-label={
+                                                mostrarClave
+                                                    ? "Ocultar contraseña"
+                                                    : "Mostrar contraseña"
+                                            }
                                         >
                                             {mostrarClave ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
@@ -126,15 +152,19 @@ const FormularioRegistro: React.FC = () => {
                                     Al menos 6 caracteres, incluye mayúsculas, números y símbolos.
                                 </FormDescription>
                                 <FormMessage />
-                                <FuerzaDeContrasena clave={clave} />
+                                {/* Componente que muestra la fuerza de la contraseña */}
+                                <FuerzaDeContrasena clave={claveActual} />
                             </FormItem>
                         )}
                     />
 
+                    {/* Botón de envío - se deshabilita si el formulario no es válido */}
                     <Button
                         type="submit"
                         className="w-full transition-all"
-                        disabled={!form.formState.isValid || !form.formState.isDirty}
+                        disabled={
+                            !formulario.formState.isValid || !formulario.formState.isDirty
+                        }
                     >
                         Crear cuenta
                     </Button>
