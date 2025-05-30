@@ -41,13 +41,12 @@ Este proyecto es una aplicación de formulario de registro desarrollada con tecn
 Para ejecutar el proyecto en modo desarrollo:
 
 ```bash
+npm i
+```
+y luego: (no olvidar iniciar el back-end)
+
+```bash
 npm run dev
-# o
-yarn dev
-# o
-pnpm dev
-# o
-bun dev
 ```
 
 Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el resultado.
